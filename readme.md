@@ -1,1 +1,1 @@
-base de donnée - Manga
+base de donnée - Manga/BD
