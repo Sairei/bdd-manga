@@ -10,8 +10,8 @@ public class URLcontent{
     public URL url;
     public String html = "";
 
-    private final static String A = "<table";
-    private final static String B = "</table>";
+    private final static String A = "<ul class=\"nav-liste\">";
+    private final static String B = "<!-- End Content -->\n";
 
     public URLcontent(String url, String url_suite) {
         try {
@@ -37,10 +37,10 @@ public class URLcontent{
     }
 
     // Récupere le contenu d'une table dans un fichier html
-    public String substring_table()
+    public String substring()
     {
         int posA = html.indexOf(A);
-        int posB = html.indexOf(B) + B.length();
+        int posB = html.indexOf(B);
 
         String table = html.substring(posA, posB);
 
@@ -50,30 +50,19 @@ public class URLcontent{
     // Formate proprement une table (très spécifique)
     public String format_table()
     {
-        String table = substring_table();
+        String table = substring();
 
+        table = table.replaceAll("</div>", ""); // supprime les div
         table = table.replaceAll("\t", "");     // supprime les tabulations
         table = table.replaceAll(" ( )+", "");  // supprime multiple espace
 
-        table = table.replaceAll("\\)</span>", "");
-        table = table.replaceAll(" <span style=\"color:#484848;font-style:italic;\">\\(", "</td>\n<td>");
+        table = table.replaceAll("\n</li>\n<li>", "");
+        table = table.replaceAll("<ul class=\"nav-liste\">\n<li>\n", "");
+        table = table.replaceAll("\n</a>\n\n</li>\n</ul>", "");
 
         table = table.replaceAll(" class=[^>]*","");
-        table = table.replaceAll(" style=[^>]*","");
-        table = table.replaceAll(" title=[^>]*","");
 
-        table = table.replaceAll("<img[^>]*","");
-        table = table.replaceAll("<td>></td>","");
-
-        table = table.replaceAll("<table>","");
-        table = table.replaceAll("</table>","");
-
-        table = table.replaceAll("<th>Note</th>","");
-
-        table = table.replaceAll("\n[^<]*\n", "\n");
-
-        int pos = table.indexOf("</tr>") + "</tr>".length();
-        table = table.substring(pos+1);
+        table = table.replaceAll("\n(\n)+", "\n");// supprime multiple saut
 
         return table;
     }
